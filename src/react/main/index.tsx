@@ -9,17 +9,23 @@ import { boundMethod } from 'autobind-decorator';
 export class Main extends React.Component {
   @boundMethod
   setText(ev: React.ChangeEvent<HTMLTextAreaElement>) {
-    if (ev.target.value.indexOf('e') != -1 || ev.target.value.indexOf('E') !== -1) {
+    state.cursor = ev.target.selectionStart;
+    if (ev.target.value.indexOf('e') != -1 || ev.target.value.indexOf('E') != -1) {
       return;
     }
-
     state.text = ev.target.value;
+
+    const el = ev.target;
+    this.setState({}, () => {
+      el.selectionEnd = state.cursor;
+    });
+
   }
 
   render() {
     return (
       <div className='main'>
-        <textarea value={state.text} onChange={this.setText} />
+        <textarea value={state.text} onChange={this.setText} onFocus={(e) => e.target.selectionStart = state.cursor } />
       </div>
     );
   }
